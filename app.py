@@ -3,7 +3,7 @@ import requests
 import folium
 import time
 from streamlit_folium import st_folium
-from geopy.geocoders import Nominatim
+from geopy.geocoders import ArcGIS
 from datetime import datetime
 
 # --- CẤU HÌNH GIAO DIỆN WEB ---
@@ -31,8 +31,7 @@ def weather_factor(w_type):
     else: return 1.0
 
 # Khởi tạo định vị
-geolocator = Nominatim(user_agent="grab_ai_pro_v2", timeout=10)
-
+geolocator = ArcGIS(timeout=10)
 # --- FORM NHẬP LIỆU ---
 with st.form("booking_form"):
     st.subheader("📍 Nhập thông tin lộ trình")
@@ -59,7 +58,6 @@ if submitted:
         with st.spinner("Đang kết nối vệ tinh và tính toán lộ trình tối ưu..."):
             # 1. Tìm tọa độ
             start_loc = geolocator.geocode(start_place, timeout=10)
-            time.sleep(1.5)
             end_loc = geolocator.geocode(end_place, timeout=10)
             
             if not start_loc or not end_loc:
