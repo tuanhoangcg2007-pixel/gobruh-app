@@ -3,3 +3,6 @@ folium
 geopy
 requests
 streamlit-folium
+branca
+numpy
+pandas
