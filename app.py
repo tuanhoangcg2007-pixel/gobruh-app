@@ -23,6 +23,7 @@ valid_codes = ["GIAMGIA15","DEAL15"]
 if promo_code.upper() in valid_codes:
     discount = 0.15
 
+
 def get_surge_factor():
     hour = datetime.now().hour
     if 6 <= hour < 9:
@@ -32,6 +33,7 @@ def get_surge_factor():
     else:
         return 1.0,1.0
 
+
 def weather_factor(w):
     if w=="rất xấu":
         return 1.3
@@ -40,10 +42,15 @@ def weather_factor(w):
     else:
         return 1.0
 
+
 if st.button("Tính giá chuyến đi"):
 
     start_loc = geolocator.geocode(start_place)
     end_loc = geolocator.geocode(end_place)
+
+    if start_loc is None or end_loc is None:
+        st.error("Không tìm thấy địa điểm. Hãy nhập rõ hơn.")
+        st.stop()
 
     start_point=(start_loc.latitude,start_loc.longitude)
     end_point=(end_loc.latitude,end_loc.longitude)
@@ -53,8 +60,19 @@ if st.button("Tính giá chuyến đi"):
 
     url=f"http://router.project-osrm.org/route/v1/driving/{start_lon_lat};{end_lon_lat}?overview=full&geometries=geojson"
 
-    r=requests.get(url).json()
-    route=r["routes"][0]
+    r = requests.get(url)
+
+    if r.status_code != 200:
+        st.error("Không thể tính tuyến đường")
+        st.stop()
+
+    data = r.json()
+
+    if len(data["routes"]) == 0:
+        st.error("Không tìm được tuyến đường")
+        st.stop()
+
+    route=data["routes"][0]
 
     distance_km=route["distance"]/1000
     time_min=route["duration"]/60
