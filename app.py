@@ -30,7 +30,7 @@ def weather_factor(w_type):
     else: return 1.0
 
 # Khởi tạo định vị
-geolocator = Nominatim(user_agent="grab_ai_pro")
+geolocator = Nominatim(user_agent="grab_ai_pro", timeout=10)
 
 # --- FORM NHẬP LIỆU ---
 with st.form("booking_form"):
@@ -57,8 +57,8 @@ if submitted:
     else:
         with st.spinner("Đang kết nối vệ tinh và tính toán lộ trình tối ưu..."):
             # 1. Tìm tọa độ
-            start_loc = geolocator.geocode(start_place)
-            end_loc = geolocator.geocode(end_place)
+            start_loc = geolocator.geocode(start_place, timeout=10)
+            end_loc = geolocator.geocode(end_place, timeout=10)
             
             if not start_loc or not end_loc:
                 st.error("❌ Không tìm thấy địa chỉ. Vui lòng thử nhập chi tiết hơn (Thêm Tên Đường, Quận, TP).")
